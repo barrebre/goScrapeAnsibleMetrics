@@ -80,7 +80,7 @@ func convertMetricsToILP(rawMetrics string) {
 
 				nanos := time.Now().UnixNano()
 
-				final := fmt.Sprintf("ansibleTower:%v %v", newMetric, nanos)
+				final := fmt.Sprintf("%v %v", newMetric, nanos)
 				println(final)
 			}
 		}
