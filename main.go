@@ -80,9 +80,9 @@ func convertMetricsToILP(rawMetrics string) {
 				newMetric := strings.ReplaceAll(cleanMetric, "}", "")
 				newestMetric := strings.ReplaceAll(newMetric, " ", " value=")
 
-				nanos := time.Now().UnixNano()
+				unix := time.Now().Unix()
 
-				final := fmt.Sprintf("%v %v", newestMetric, nanos)
+				final := fmt.Sprintf("%v %v", newestMetric, unix)
 				println(final)
 			}
 		}
