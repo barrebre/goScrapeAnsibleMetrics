@@ -76,8 +76,11 @@ func convertMetricsToILP(rawMetrics string) {
 		if len(metric) > 1 {
 			if metric[0] != '#' {
 				cleanMetric := strings.ReplaceAll(metric, "{", ",")
-				new := strings.ReplaceAll(cleanMetric, "}", "")
-				final := "ansibleTower:" + new
+				newMetric := strings.ReplaceAll(cleanMetric, "}", "")
+
+				nanos := time.Now().UnixNano()
+
+				final := fmt.Sprintf("ansibleTower:%v %v", newMetric, nanos)
 				println(final)
 			}
 		}
