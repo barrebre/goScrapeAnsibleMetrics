@@ -75,7 +75,8 @@ func convertMetricsToILP(rawMetrics string) {
 	for _, metric := range metrics {
 		if len(metric) > 1 {
 			if metric[0] != '#' {
-				cleanMetric := strings.ReplaceAll(metric, "{", ",")
+				noQuotes := strings.ReplaceAll(metric, "\"", "")
+				cleanMetric := strings.ReplaceAll(noQuotes, "{", ",")
 				newMetric := strings.ReplaceAll(cleanMetric, "}", "")
 				newestMetric := strings.ReplaceAll(newMetric, " ", " value=")
 
