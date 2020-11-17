@@ -24,6 +24,7 @@ func main() {
 	defer logFile.Close()
 	Logger = log.New(logFile, "", log.LstdFlags)
 
+	fmt.Println(os.Args)
 	if len(os.Args) < 2 {
 		Logger.Println(fmt.Sprint(os.Args))
 		Logger.Println("You must pass in an API token when calling this script.")
