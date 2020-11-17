@@ -51,11 +51,21 @@ func getMetrics(apiToken string) (string, error) {
 	// Perform the request
 	r, err := client.Do(req)
 	if err != nil {
+		text := []byte("couldn't query endpoint")
+		err := ioutil.WriteFile("/tmp/goScrapeAnsibleMetricsErr", text, 0644)
+		if err != nil {
+			fmt.Println("Coudln't write to file")
+		}
 		return "", err
 	}
 
 	// Check the status code
 	if r.StatusCode != 200 {
+		text := []byte(fmt.Sprintf("Invalid status code from Ansible Tower: %v. ", r.StatusCode))
+		err := ioutil.WriteFile("/tmp/goScrapeAnsibleMetricsErr", text, 0644)
+		if err != nil {
+			fmt.Println("Coudln't write to file")
+		}
 		return "", fmt.Errorf("Invalid status code from Ansible Tower: %v. ", r.StatusCode)
 	}
 
@@ -63,6 +73,11 @@ func getMetrics(apiToken string) (string, error) {
 	b, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 	if err != nil {
+		text := []byte("Couldn't read the body of the request")
+		err := ioutil.WriteFile("/tmp/goScrapeAnsibleMetricsErr", text, 0644)
+		if err != nil {
+			fmt.Println("Coudln't write to file")
+		}
 		return "", fmt.Errorf("Couldn't read the body of the request: %v", err)
 	}
 
@@ -86,5 +101,11 @@ func convertMetricsToILP(rawMetrics string) {
 				println(final)
 			}
 		}
+	}
+
+	text := []byte("Finished writing all")
+	err := ioutil.WriteFile("/tmp/goScrapeAnsibleMetricsOut", text, 0644)
+	if err != nil {
+		fmt.Println("Coudln't write to file")
 	}
 }
