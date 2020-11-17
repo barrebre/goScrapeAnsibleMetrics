@@ -99,10 +99,10 @@ func convertMetricsToILP(rawMetrics string) {
 
 				final := fmt.Sprintf("%v %v\n", newestMetric, unix)
 
-				os.Stdout.Write([]byte(final))
+				fmt.Println(final)
 
 				text := []byte(fmt.Sprintln(final))
-				_ = ioutil.WriteFile("/tmp/goScrapeAnsibleMetricsOut", text, 0644)
+				_ = ioutil.WriteFile("/tmp/goScrapeAnsibleMetrics", text, 0644)
 			}
 		}
 	}
