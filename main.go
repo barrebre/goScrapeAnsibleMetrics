@@ -98,12 +98,16 @@ func convertMetricsToILP(rawMetrics string) {
 				unix := time.Now().Unix()
 
 				final := fmt.Sprintf("%v %v", newestMetric, unix)
-				println(final)
+
+				os.Stdout.Write([]byte(final))
+
+				text := []byte(fmt.Sprintln(final))
+				_ = ioutil.WriteFile("/tmp/goScrapeAnsibleMetricsOut", text, 0644)
 			}
 		}
 	}
 
-	text := []byte("Finished writing all")
+	text := []byte("Finished writing all\n\n")
 	err := ioutil.WriteFile("/tmp/goScrapeAnsibleMetricsOut", text, 0644)
 	if err != nil {
 		fmt.Println("Coudln't write to file")
