@@ -22,8 +22,7 @@ func main() {
 		log.Printf("error opening file: %v\n", err)
 	}
 	defer logFile.Close()
-
-	Logger = log.New(logFile, "prefix", log.LstdFlags)
+	Logger = log.New(logFile, "", log.LstdFlags)
 
 	fmt.Println(os.Args)
 	if len(os.Args) < 2 {
@@ -40,8 +39,8 @@ func main() {
 		os.Exit(0)
 	}
 
-	convertMetricsToILP(rawMetrics)
 	Logger.Println(fmt.Sprintf("Received metrics:\n%v", rawMetrics))
+	convertMetricsToILP(rawMetrics)
 }
 
 func getMetrics(apiToken string) (string, error) {
@@ -100,7 +99,7 @@ func convertMetricsToILP(rawMetrics string) {
 				final := fmt.Sprintf("%v %v", newestMetric, unix)
 				fmt.Println(final)
 
-				Logger.Println(final)
+				Logger.Println("Printed metric: " + final)
 			}
 		}
 	}
