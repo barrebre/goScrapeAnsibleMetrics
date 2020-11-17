@@ -51,21 +51,11 @@ func getMetrics(apiToken string) (string, error) {
 	// Perform the request
 	r, err := client.Do(req)
 	if err != nil {
-		text := []byte("couldn't query endpoint")
-		err := ioutil.WriteFile("/tmp/goScrapeAnsibleMetricsErr", text, 0644)
-		if err != nil {
-			fmt.Println("Coudln't write to file")
-		}
 		return "", err
 	}
 
 	// Check the status code
 	if r.StatusCode != 200 {
-		text := []byte(fmt.Sprintf("Invalid status code from Ansible Tower: %v. ", r.StatusCode))
-		err := ioutil.WriteFile("/tmp/goScrapeAnsibleMetricsErr", text, 0644)
-		if err != nil {
-			fmt.Println("Coudln't write to file")
-		}
 		return "", fmt.Errorf("Invalid status code from Ansible Tower: %v. ", r.StatusCode)
 	}
 
@@ -73,11 +63,6 @@ func getMetrics(apiToken string) (string, error) {
 	b, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 	if err != nil {
-		text := []byte("Couldn't read the body of the request")
-		err := ioutil.WriteFile("/tmp/goScrapeAnsibleMetricsErr", text, 0644)
-		if err != nil {
-			fmt.Println("Coudln't write to file")
-		}
 		return "", fmt.Errorf("Couldn't read the body of the request: %v", err)
 	}
 
@@ -94,22 +79,11 @@ func convertMetricsToILP(rawMetrics string) {
 				cleanMetric := strings.ReplaceAll(noQuotes, "{", ",")
 				newMetric := strings.ReplaceAll(cleanMetric, "}", "")
 				newestMetric := strings.ReplaceAll(newMetric, " ", " value=")
-
 				unix := time.Now().Unix()
 
-				final := fmt.Sprintf("%v %v\n", newestMetric, unix)
-
+				final := fmt.Sprintf("%v %v", newestMetric, unix)
 				fmt.Println(final)
-
-				text := []byte(fmt.Sprintln(final))
-				_ = ioutil.WriteFile("/tmp/goScrapeAnsibleMetrics", text, 0644)
 			}
 		}
-	}
-
-	text := []byte("Finished writing all\n\n")
-	err := ioutil.WriteFile("/tmp/goScrapeAnsibleMetricsOut", text, 0644)
-	if err != nil {
-		fmt.Println("Coudln't write to file")
 	}
 }
