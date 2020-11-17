@@ -4,28 +4,44 @@ import (
 	"crypto/tls"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strings"
 	"time"
 )
 
+// Logger for the app
+var Logger *log.Logger
+
 func main() {
+	// open file for debugging
+	logFile, err := os.OpenFile("/tmp/goScrapeAnsibleMetrics.log",
+		os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Printf("error opening file: %v\n", err)
+	}
+	defer logFile.Close()
+
+	Logger = log.New(logFile, "prefix", log.LstdFlags)
+
+	fmt.Println(os.Args)
 	if len(os.Args) < 2 {
-		fmt.Println(os.Args)
-		fmt.Println("You must pass in an API token when calling this script.")
-		fmt.Println("Usage: ./goScrapeAnsibleMetrics 1234asdf1234")
+		Logger.Println(fmt.Sprint(os.Args))
+		Logger.Println("You must pass in an API token when calling this script.")
+		Logger.Println("Usage: ./goScrapeAnsibleMetrics 1234asdf1234")
 		os.Exit(0)
 	}
 
 	rawMetrics, err := getMetrics(os.Args[1])
 	if err != nil {
-		fmt.Println("There was an error scraping Ansible. Error: ", err.Error())
+		Logger.Println(fmt.Sprintf("There was an error scraping Ansible. Error: %v", err.Error()))
+		fmt.Println(fmt.Sprintf("There was an error scraping Ansible. Error: %v", err.Error()))
 		os.Exit(0)
 	}
 
 	convertMetricsToILP(rawMetrics)
-	// fmt.Println("Received metrics:\n", rawMetrics)
+	Logger.Println(fmt.Sprintf("Received metrics:\n%v", rawMetrics))
 }
 
 func getMetrics(apiToken string) (string, error) {
@@ -83,6 +99,8 @@ func convertMetricsToILP(rawMetrics string) {
 
 				final := fmt.Sprintf("%v %v", newestMetric, unix)
 				fmt.Println(final)
+
+				Logger.Println(final)
 			}
 		}
 	}
