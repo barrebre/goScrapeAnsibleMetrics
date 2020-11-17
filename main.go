@@ -24,7 +24,6 @@ func main() {
 	defer logFile.Close()
 	Logger = log.New(logFile, "", log.LstdFlags)
 
-	fmt.Println(os.Args)
 	if len(os.Args) < 2 {
 		Logger.Println(fmt.Sprint(os.Args))
 		Logger.Println("You must pass in an API token when calling this script.")
@@ -35,7 +34,6 @@ func main() {
 	rawMetrics, err := getMetrics(os.Args[1])
 	if err != nil {
 		Logger.Println(fmt.Sprintf("There was an error scraping Ansible. Error: %v", err.Error()))
-		fmt.Println(fmt.Sprintf("There was an error scraping Ansible. Error: %v", err.Error()))
 		os.Exit(0)
 	}
 
