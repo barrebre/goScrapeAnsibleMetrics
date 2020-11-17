@@ -97,7 +97,7 @@ func convertMetricsToILP(rawMetrics string) {
 
 				unix := time.Now().Unix()
 
-				final := fmt.Sprintf("%v %v", newestMetric, unix)
+				final := fmt.Sprintf("%v %v\n", newestMetric, unix)
 
 				os.Stdout.Write([]byte(final))
 
