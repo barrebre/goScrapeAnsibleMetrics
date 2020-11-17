@@ -86,8 +86,11 @@ func convertMetricsToILP(rawMetrics string) {
 	metrics := strings.Split(rawMetrics, "\n")
 
 	for _, metric := range metrics {
+		Logger.Println("Observed metric: " + metric)
 		if len(metric) > 1 {
+			Logger.Println("Observed metric with length > 1: " + metric)
 			if metric[0] != '#' {
+				Logger.Println("Observed metric that doesn't start with #: " + metric)
 				noQuotes := strings.ReplaceAll(metric, "\"", "")
 				cleanMetric := strings.ReplaceAll(noQuotes, "{", ",")
 				newMetric := strings.ReplaceAll(cleanMetric, "}", "")
