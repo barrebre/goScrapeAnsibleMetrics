@@ -178,7 +178,7 @@ func convertMetricsToStatsD(rawMetrics string) {
 				statsClient.Gauge(metricValue[0], int64(value))
 
 				Logger.Println(fmt.Sprintf("Printed metric: %v", metricValue))
-				fmt.Println(fmt.Sprintf("Printed metric: %v", metricValue))
+				fmt.Println(fmt.Sprintf("Sent StatsD metric: %v", metricValue))
 			}
 		}
 	}
