@@ -58,19 +58,19 @@ func readCommandLineArgs() (Config, error) {
 
 	flag.Parse()
 
-	fmt.Println("API TOKEN IS: ", *apiToken)
+	Logger.Println("API TOKEN IS: ", *apiToken)
 
 	if *apiToken == "" {
-		fmt.Println("There was no API token provided. An Ansible Tower API key is required")
+		Logger.Println("There was no API token provided. An Ansible Tower API key is required")
 		return Config{}, fmt.Errorf("There was no API token provided. An Ansible Tower API key is required")
 	}
 
 	if *format == "telegraf" {
-		fmt.Println("There was no metric format provided. Defaulting to Telegraf")
+		Logger.Println("There was no metric format provided. Defaulting to Telegraf")
 	}
 
 	if *serverURL == "localhost" {
-		fmt.Println("There was no Server URL provided. Defaulting to localhost")
+		Logger.Println("There was no Server URL provided. Defaulting to localhost")
 	}
 
 	config := Config{
@@ -100,8 +100,6 @@ func getMetrics(config Config) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
-	fmt.Println("Querying server: ", serverURL)
 
 	// Add the API token
 	apiTokenField := fmt.Sprintf("Bearer %v", config.APIToken)
