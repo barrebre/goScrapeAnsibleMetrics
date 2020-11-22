@@ -58,8 +58,6 @@ func readCommandLineArgs() (Config, error) {
 
 	flag.Parse()
 
-	Logger.Println("API TOKEN IS: ", *apiToken)
-
 	if *apiToken == "" {
 		Logger.Println("There was no API token provided. An Ansible Tower API key is required")
 		return Config{}, fmt.Errorf("There was no API token provided. An Ansible Tower API key is required")
