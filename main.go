@@ -30,8 +30,7 @@ func main() {
 
 	config, err := readCommandLineArgs()
 	if err != nil {
-		fmt.Println("The config was not complete: ", err)
-		fmt.Println("Usage: ./goScrapeAnsibleMetrics --api-token={} --format={} --server-url={}")
+		fmt.Printf("The config was not complete: %v.\nUsage: ./goScrapeAnsibleMetrics --api-token={} --format={} --server-url={}.\n", err)
 		os.Exit(0)
 	}
 
