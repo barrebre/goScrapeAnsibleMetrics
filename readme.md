@@ -1,7 +1,7 @@
 This app reads from an Ansible Tower metrics endpoint (`api/v2/metrics`) and scrapes the metrics into Influx Line Protocol.
 
 ## Usage
-`Usage: ./goScrapeAnsibleMetrics -api-token={} -server-url={}`
+Usage: `./goScrapeAnsibleMetrics -api-token={} -server-url={}`
 * **api-token**: The Ansible Tower token to pull metrics
 * **server-url**: The Ansible Tower server to pull metrics from
 
