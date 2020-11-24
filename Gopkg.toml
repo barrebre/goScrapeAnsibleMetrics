@@ -24,11 +24,6 @@
 #   go-tests = true
 #   unused-packages = true
 
-
-[[constraint]]
-  name = "github.com/quipo/statsd"
-  version = "1.4.0"
-
 [prune]
   go-tests = true
   unused-packages = true

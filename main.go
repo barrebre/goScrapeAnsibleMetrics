@@ -8,11 +8,8 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"strings"
 	"time"
-
-	"github.com/quipo/statsd"
 )
 
 // Config contains the config from the command line parameters
@@ -30,7 +27,7 @@ func main() {
 
 	config, err := readCommandLineArgs()
 	if err != nil {
-		fmt.Printf("The config was not complete: %v.\nUsage: ./goScrapeAnsibleMetrics --api-token={} --format={} --server-url={}.\n", err)
+		fmt.Printf("The config was not complete: %v.\nUsage: ./goScrapeAnsibleMetrics -api-token={} -server-url={}.\n", err)
 		os.Exit(0)
 	}
 
@@ -42,17 +39,12 @@ func main() {
 
 	Logger.Println(fmt.Sprintf("Received metrics:\n%v", rawMetrics))
 
-	if config.Format == "statsd" {
-		convertMetricsToStatsD(rawMetrics)
-	} else {
-		convertMetricsToILP(rawMetrics)
-	}
+	convertMetricsToILP(rawMetrics)
 
 }
 
 func readCommandLineArgs() (Config, error) {
 	apiToken := flag.String("api-token", "", "API Token for Ansible Tower")
-	format := flag.String("format", "telegraf", "Format to send metrics in")
 	serverURL := flag.String("server-url", "localhost", "Ansible Tower Server URL")
 
 	flag.Parse()
@@ -62,17 +54,12 @@ func readCommandLineArgs() (Config, error) {
 		return Config{}, fmt.Errorf("There was no API token provided. An Ansible Tower API key is required")
 	}
 
-	if *format == "telegraf" {
-		Logger.Println("There was no metric format provided. Defaulting to Telegraf")
-	}
-
 	if *serverURL == "localhost" {
 		Logger.Println("There was no Server URL provided. Defaulting to localhost")
 	}
 
 	config := Config{
 		APIToken:  *apiToken,
-		Format:    *format,
 		ServerURL: *serverURL,
 	}
 
@@ -151,45 +138,4 @@ func convertMetricsToILP(rawMetrics string) {
 			}
 		}
 	}
-}
-
-func convertMetricsToStatsD(rawMetrics string) {
-	metrics := strings.Split(rawMetrics, "\n")
-	statsClient := makeStatsDClient()
-
-	for _, metric := range metrics {
-		if len(metric) > 1 {
-			if metric[0] != '#' {
-				noQuotes := strings.ReplaceAll(metric, "\"", "")
-				cleanMetric := strings.ReplaceAll(noQuotes, "{", ",")
-				newMetric := strings.ReplaceAll(cleanMetric, "}", "")
-
-				metricValue := strings.Split(newMetric, " ")
-				value, err := strconv.Atoi(metricValue[1])
-				if err != nil {
-					Logger.Printf("Couldn't convert metric to int: %v\n", metricValue)
-				}
-
-				statsClient.Gauge(metricValue[0], int64(value))
-
-				Logger.Println(fmt.Sprintf("Printed metric: %v", metricValue))
-				fmt.Println(fmt.Sprintf("Sent StatsD metric: %v", metricValue))
-			}
-		}
-	}
-}
-
-func makeStatsDClient() *statsd.StatsdBuffer {
-	prefix := "statsd."
-	statsdclient := statsd.NewStatsdClient("localhost:14499", prefix)
-	err := statsdclient.CreateSocket()
-	if nil != err {
-		log.Println(err)
-		os.Exit(1)
-	}
-	interval := time.Second * 2 // aggregate stats and flush every 2 seconds
-	stats := statsd.NewStatsdBuffer(interval, statsdclient)
-	defer stats.Close()
-
-	return stats
 }
